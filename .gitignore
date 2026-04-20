@@ -39,6 +39,8 @@ htmlcov/
 # Alembic (если временные файлы)
 alembic/versions/*.pyc
 alembic/__pycache__/
+!migrations/.gitkeep
+!migrations/versions/.gitkeep
 
 # Docker (если генерируются временные файлы)
 .dockerignore

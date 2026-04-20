@@ -1,0 +1,50 @@
+# Виртуальное окружение
+venv/
+
+# Файлы Python
+__pycache__/
+*.py[cod]
+*.so
+.Python
+
+# Логи и БД (SQLite)
+*.log
+*.db
+*.sqlite
+*.sqlite3
+data/*.db
+!data/.gitkeep
+
+# Переменные окружения
+.env
+.env.local
+.env.*.local
+
+# IDE и редакторы
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Тесты и покрытие
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# MyPy
+.mypy_cache/
+
+# Alembic (если временные файлы)
+alembic/versions/*.pyc
+alembic/__pycache__/
+
+# Docker (если генерируются временные файлы)
+.dockerignore
+
+# Файлы проекта, которые не должны попадать в репозиторий
+*.pyo
+*.pyd
+*.egg-info/
+.eggs/

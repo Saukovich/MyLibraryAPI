@@ -1,5 +1,4 @@
 import asyncio
-from typing import AsyncGenerator
 
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
@@ -38,7 +37,7 @@ async def setup_database():
 
 
 @pytest.fixture
-async def db_session() -> AsyncGenerator[AsyncSession, None]:
+async def db_session() -> AsyncSession:
     """
     Создание сессии для работы с тестовой базой данных.
     :return: AsyncGenerator[AsyncSession, None] - сессия.

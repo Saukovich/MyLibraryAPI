@@ -9,7 +9,7 @@ from app.core.database import Model
 TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"
 
 engine = create_async_engine(TEST_DATABASE_URL)
-testing_session = async_sessionmaker(engine)
+testing_session = async_sessionmaker(engine, expire_on_commit=False)
 
 
 @pytest.fixture(scope="session")

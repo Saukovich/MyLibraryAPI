@@ -1,4 +1,5 @@
 import pytest
+from sqlalchemy.exc import IntegrityError
 
 from app.models.users import User
 
@@ -130,4 +131,28 @@ async def test_insert_user_where_password_exceeds_max_length_raises_value_error(
     """Тестирование добавления пользователя с длинным password"""
     with pytest.raises(ValueError):
         db_session.add(User(**user))
+        await db_session.commit()
+
+
+@pytest.mark.asyncio
+async def test_insert_users_with_not_unique_username_raises_integrity_error(db_session):
+    """Тестирование добавления пользователей с одинаковым username"""
+    with pytest.raises(IntegrityError):
+        users = [
+            User(username="test_user", email="test@gmail.com", password="test"),
+            User(username="test_user", email="test1@gmail.com", password="test"),
+        ]
+        db_session.add_all(users)
+        await db_session.commit()
+
+
+@pytest.mark.asyncio
+async def test_insert_users_with_not_unique_email_raises_integrity_error(db_session):
+    """Тестирование добавления пользователей с одинаковым email"""
+    with pytest.raises(IntegrityError):
+        users = [
+            User(username="test_user", email="test@gmail.com", password="test"),
+            User(username="test_user1", email="test@gmail.com", password="test"),
+        ]
+        db_session.add_all(users)
         await db_session.commit()

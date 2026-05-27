@@ -1,9 +1,9 @@
 from datetime import datetime, timezone
 
-from sqlalchemy import DateTime
+from sqlalchemy import CheckConstraint, DateTime
 from sqlalchemy import Enum as SQLAlchemyEnum
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column, validates
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Model
 
@@ -17,8 +17,8 @@ class UserBook(Model):
     Attributes:
         user_id (int): ID пользователя.
         book_id (int): ID книги.
-        status (BookStatus): Статус книги (например, "planned", "reading", "read").
-            По умолчанию - "planned".
+        status (BookStatus): Статус книги (например, "в планах", "чтение", "прочитано", "заброшено").
+            По умолчанию - "в планах".
         rating (int | None): Рейтинг книги от 0 до 10.
             Может быть None, если книга не прочитана.
         added_at (datetime): Дата добавления книги на полку.
@@ -26,22 +26,17 @@ class UserBook(Model):
 
     __tablename__ = "user_books"
 
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), primary_key=True)
-    book_id: Mapped[int] = mapped_column(ForeignKey("books.id"), primary_key=True)
     status: Mapped[BookStatus] = mapped_column(
-        SQLAlchemyEnum(BookStatus, create_constraint=True), default=BookStatus.PLANNED, nullable=False
+        SQLAlchemyEnum(BookStatus, create_constraint=True), default=BookStatus.PLANNED
     )
-    rating: Mapped[int | None] = mapped_column(default=None, nullable=True)
-    added_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now(timezone.utc), nullable=False)
+    rating: Mapped[int | None] = mapped_column(default=None)
+    added_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now(timezone.utc))
 
-    @validates("rating")
-    def validate_rating(self, key: str, value: int | None) -> int | None:
-        """
-        Валидация рейтинга книги.
-        :param key: str - Атрибут, который валидируется.
-        :param value: int | None - Значение рейтинга.
-        :return: int | None - Значение рейтинга.
-        """
-        if value is not None and not 0 <= value <= 10:
-            raise ValueError("Rating must be between 0 and 10")
-        return value
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), primary_key=True)
+    book_id: Mapped[int] = mapped_column(ForeignKey("books.id", ondelete="CASCADE"), primary_key=True)
+
+    user = relationship("User", back_populates="shelf_entries")
+    book = relationship("Book")
+    notes = relationship("Note", back_populates="user_book", cascade="all, delete-orphan")
+
+    __table_args__ = (CheckConstraint("rating >= 1 AND rating <= 10", name="check_rating_positive"),)

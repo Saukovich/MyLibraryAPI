@@ -19,6 +19,6 @@ class BookAuthor(Model):
     __tablename__ = "book_authors"
 
     book_id: Mapped[int] = mapped_column(ForeignKey("books.id", ondelete="CASCADE"), primary_key=True)
-    author_id: Mapped[int] = mapped_column(ForeignKey("authors.id"), ondelete="CASCADE", primary_key=True)
+    author_id: Mapped[int] = mapped_column(ForeignKey("authors.id", ondelete="CASCADE"), primary_key=True)
 
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now(timezone.utc))

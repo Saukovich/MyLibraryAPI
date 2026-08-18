@@ -4,10 +4,8 @@ import pytest
 from sqlalchemy import event
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
+import app.models  # noqa: F401
 from app.core.database import Model
-from app.models.authors import Author
-from app.models.book_authors import BookAuthor
-from app.models.books import Book
 
 
 TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:?foreign_keys=on"
@@ -46,8 +44,6 @@ async def setup_database():
     Создание тестовой базы данных и удаление всех таблиц после тестов.
     :return: None.
     """
-    tables = [Book, Author, BookAuthor]
-    print("setup database, create tables:", tables)
     async with engine.begin() as conn:
         await conn.run_sync(Model.metadata.create_all)  # создание таблиц
     yield

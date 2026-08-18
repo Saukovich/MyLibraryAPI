@@ -25,7 +25,7 @@ class Note(Model):
     id: Mapped[int] = mapped_column(primary_key=True, init=False)
     text: Mapped[str] = mapped_column()
     page: Mapped[int] = mapped_column()
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now(timezone.utc))
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     user_id: Mapped[int] = mapped_column()
     book_id: Mapped[int] = mapped_column()

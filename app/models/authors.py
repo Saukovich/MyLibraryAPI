@@ -26,7 +26,7 @@ class Author(Model):
     fullname: Mapped[str] = mapped_column(String(100))
     birth_year: Mapped[int] = mapped_column()
     death_year: Mapped[int | None] = mapped_column(default=None)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now(timezone.utc))
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     books = relationship("Book", secondary="book_authors", back_populates="authors")
 

@@ -7,7 +7,7 @@ from app.schemas.params import AuthorFilterParams
 from .base_repository import BaseRepository
 
 
-class AuthorRepository(BaseRepository):
+class AuthorRepository(BaseRepository[Author]):
     """Репозиторий для работы с авторами.
 
     get_by_filters: Получение авторов по фильтрам."""
@@ -32,7 +32,7 @@ class AuthorRepository(BaseRepository):
 
         filters = []
         if author_filters.fullname:  # фильтр по имени автора
-            filters.append(Author.fullname == author_filters.fullname)
+            filters.append(Author.fullname.ilike(f"%{author_filters.fullname}%"))
         if author_filters.birth_year_min:  # фильтр по году рождения (не меньше)
             filters.append(Author.birth_year >= author_filters.birth_year_min)
         if author_filters.birth_year_max:  # фильтр по году рождения (не больше)
@@ -51,14 +51,12 @@ class AuthorRepository(BaseRepository):
         if author_filters.sort_by:  # сортировка
             if author_filters.sort_by == "id":  # сортировка по id
                 sort_by = Author.id
-            if author_filters.sort_by == "fullname":  # сортировка по имени автора
+            elif author_filters.sort_by == "fullname":  # сортировка по имени автора
                 sort_by = Author.fullname
-            if author_filters.sort_by == "birth_year":  # сортировка по году рождения
+            elif author_filters.sort_by == "birth_year":  # сортировка по году рождения
                 sort_by = Author.birth_year
-            if author_filters.sort_by == "death_year":  # сортировка по году смерти
+            elif author_filters.sort_by == "death_year":  # сортировка по году смерти
                 sort_by = Author.death_year
-            else:
-                pass
 
             if author_filters.order_by == "asc":  # сортировка по возрастанию
                 sort_by = sort_by.asc()
@@ -66,12 +64,7 @@ class AuthorRepository(BaseRepository):
                 sort_by = sort_by.desc()
 
         query = (
-            select(Author)
-            .where(*filters)
-            .order_by(sort_by)
-            .limit(author_filters.limit)
-            .offset(author_filters.offset)
-            .distinct()
+            select(Author).where(*filters).order_by(sort_by).limit(author_filters.limit).offset(author_filters.offset)
         )
 
         result = await self.session.execute(query)

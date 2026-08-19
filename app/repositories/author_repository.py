@@ -1,3 +1,5 @@
+from typing import Sequence
+
 from sqlalchemy import select
 
 from app.core.database import SessionDep
@@ -20,14 +22,14 @@ class AuthorRepository(BaseRepository[Author]):
         """
         super().__init__(Author, session)
 
-    async def get_by_filters(self, author_filters: AuthorFilterParams) -> list[Author]:
+    async def get_by_filters(self, author_filters: AuthorFilterParams) -> Sequence[Author]:
         """
         Получение авторов по фильтрам.
         Args:
             author_filters: AuthorFilterParams -- фильтры.
 
         Returns:
-            list[Author]: Список авторов.
+            Sequence[Author]: Список авторов.
         """
 
         filters = []

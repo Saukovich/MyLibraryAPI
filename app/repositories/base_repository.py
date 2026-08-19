@@ -60,7 +60,7 @@ class BaseRepository(Generic[ModelType]):
         db_obj = self.model(**data)
 
         self.session.add(db_obj)
-        await self.session.commit()
+        await self.session.flush()
         await self.session.refresh(db_obj)
 
         return db_obj
@@ -78,7 +78,7 @@ class BaseRepository(Generic[ModelType]):
         query = update(self.model).filter_by(**composite_id).values(**data).returning(self.model)
 
         result = await self.session.execute(query)
-        await self.session.commit()
+        await self.session.flush()
 
         return result.scalar_one_or_none()
 
@@ -94,6 +94,6 @@ class BaseRepository(Generic[ModelType]):
         query = delete(self.model).filter_by(**composite_id)
 
         result = await self.session.execute(query)
-        await self.session.commit()
+        await self.session.flush()
 
         return result.rowcount > 0

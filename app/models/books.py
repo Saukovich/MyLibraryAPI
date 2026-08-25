@@ -23,7 +23,7 @@ class Book(Model):
     id: Mapped[int] = mapped_column(primary_key=True, init=False)
     title: Mapped[str] = mapped_column(String(50))
     release_year: Mapped[int] = mapped_column()
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at: Mapped[datetime] = mapped_column(DateTime, default_factory=lambda: datetime.now(timezone.utc))
 
     authors = relationship("Author", secondary="book_authors", back_populates="books")
 

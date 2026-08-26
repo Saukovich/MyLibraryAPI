@@ -300,25 +300,25 @@ async def test_author_repo_get_by_filters_with_all_main_params(dict_filters, aut
     await author_repository.create({"fullname": "Author1", "birth_year": 1803, "death_year": 1847})
     await author_repository.create({"fullname": "Author1", "birth_year": 1805, "death_year": 1850})
     await author_repository.create({"fullname": "Author1", "birth_year": 1806, "death_year": 1845})
-    await author_repository.create({"fullname": "Author1_1", "birth_year": 1805, "death_year": 1850})
+    await author_repository.create({"fullname": "Author1_1", "birth_year": 1805, "death_year": 1851})
 
     await author_repository.create({"fullname": "Author2", "birth_year": 1806})
     await author_repository.create({"fullname": "Author2", "birth_year": 1807})
     await author_repository.create({"fullname": "Author2", "birth_year": 1810})
     await author_repository.create({"fullname": "Author2", "birth_year": 1806, "death_year": 1870})
-    await author_repository.create({"fullname": "Author2_1", "birth_year": 1810})
+    await author_repository.create({"fullname": "Author2_1", "birth_year": 1811})
 
     await author_repository.create({"fullname": "Author3", "birth_year": 1800})
     await author_repository.create({"fullname": "Author3", "birth_year": 1803})
     await author_repository.create({"fullname": "Author3", "birth_year": 1805})
     await author_repository.create({"fullname": "Author3", "birth_year": 1806})
-    await author_repository.create({"fullname": "Author3_1", "birth_year": 1805})
+    await author_repository.create({"fullname": "Author3_1", "birth_year": 1806})
 
     result = await author_repository.get_by_filters(filters)
     flag = True
     for author in result:
         if not (
-            author.fullname == dict_filters["fullname"]
+            dict_filters["fullname"].lower() in author.fullname.lower()
             and dict_filters["birth_year_min"] <= author.birth_year <= dict_filters["birth_year_max"]
         ):
             flag = False
@@ -330,7 +330,7 @@ async def test_author_repo_get_by_filters_with_all_main_params(dict_filters, aut
             break
         else:  # если автор мертвый, то проверяем, что год смерти указан и он входит в диапазон
             if not (author.death_year is None) and not (
-                dict_filters["death_year_min"] <= author.birth_year <= dict_filters["death_year_max"]
+                dict_filters["death_year_min"] <= author.death_year <= dict_filters["death_year_max"]
             ):
                 flag = False
                 break

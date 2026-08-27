@@ -158,6 +158,18 @@ class AuthorFilterParams(PaginationParams):
 
 
 class NoteFilterParams(PaginationParams):
+    """
+    Query-параметры для фильтрации заметок.
+
+    Attributes:
+        page_min (int | None): Минимальная страница, на которой находится заметка.
+        page_max (int | None): Максимальная страница, на которой находится заметка.
+        sort_by (str): Поле для сортировки (по умолчанию 'id').
+            Возможные значения: 'id', 'text', 'page', 'created_at'.
+        order_by (str): Порядок сортировки (по умолчанию 'asc').
+            Возможные значения: 'asc' (по возрастанию) или 'desc' (по убыванию).
+    """
+
     page_min: int | None = Field(None, ge=1)
     page_max: int | None = Field(None, ge=1)
     sort_by: str = "id"

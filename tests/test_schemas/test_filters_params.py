@@ -1,6 +1,11 @@
 import pytest
 
-from app.schemas.params import AuthorFilterParams, BookFilterParams, PaginationParams
+from app.schemas.params import AuthorFilterParams, BookFilterParams, NoteFilterParams, PaginationParams
+
+
+# ================
+# PaginationParams
+# ================
 
 
 @pytest.mark.parametrize("limit,offset", [(0, 0), (-1, -1), (101, 0), (100, -1)])
@@ -8,6 +13,11 @@ def test_pagination_params_raises_value_error(limit, offset):
     """Тест для проверки параметров пагинации."""
     with pytest.raises(ValueError):
         PaginationParams(limit=limit, offset=offset)
+
+
+# ================
+# BookFilterParams
+# ================
 
 
 @pytest.mark.parametrize("author_name", ["", "A" * 256])
@@ -22,6 +32,11 @@ def test_book_filter_params_release_year_raises_value_error(release_year_min, re
     """Тест для проверки года выпуска книги."""
     with pytest.raises(ValueError):
         BookFilterParams(release_year_min=release_year_min, release_year_max=release_year_max)
+
+
+# ==================
+# AuthorFilterParams
+# ==================
 
 
 @pytest.mark.parametrize("fullname", ["", "A" * 256])
@@ -74,3 +89,14 @@ def test_author_filter_params_combination_years_raises_value_error(
             death_year_min=death_year_min,
             death_year_max=death_year_max,
         )
+
+
+# ================
+# NoteFilterParams
+# ================
+
+
+def test_note_filter_params_page_min_max_raises_value_error():
+    """Тест для проверки диапазона страниц."""
+    with pytest.raises(ValueError):
+        NoteFilterParams(page_min=10, page_max=1)

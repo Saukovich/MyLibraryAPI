@@ -155,3 +155,34 @@ class AuthorFilterParams(PaginationParams):
             if self.birth_year_min > self.death_year_max:
                 raise ValueError("Минимальный год рождения не может быть больше максимального года смерти")
         return self
+
+
+class NoteFilterParams(PaginationParams):
+    page_min: int | None = Field(None, ge=1)
+    page_max: int | None = Field(None, ge=1)
+    sort_by: str = "id"
+    order_by: str = "asc"
+
+    @field_validator("sort_by", mode="after")
+    def validate_sort_by(cls, v):
+        """Валидация поля для сортировки.
+        Возможные значения: "id", "text", "page", "created_at"."""
+        if v not in ["id", "text", "page", "created_at"]:
+            raise ValueError("Недопустимое значение для sort_by")
+        return v
+
+    @field_validator("order_by", mode="after")
+    def validate_order_by(cls, v):
+        """Валидация порядка сортировки.
+        Возможные значения: "asc" и "desc"."""
+        if v not in ["asc", "desc"]:
+            raise ValueError("Недопустимое значение для order_by")
+        return v
+
+    @model_validator(mode="after")
+    def validate_page(self):
+        """Валидация диапазона страниц.
+        Минимальная страница не может быть больше максимальной страницы."""
+        if self.page_min and self.page_max and self.page_min > self.page_max:
+            raise ValueError("Минимальная страница не может быть больше максимальной страницы")
+        return self

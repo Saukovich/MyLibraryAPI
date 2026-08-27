@@ -1,8 +1,8 @@
-from datetime import datetime, timezone
+from datetime import datetime
 
 from sqlalchemy import CheckConstraint, DateTime
 from sqlalchemy import Enum as SQLAlchemyEnum
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Model
@@ -29,11 +29,12 @@ class UserBook(Model):
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), primary_key=True)
     book_id: Mapped[int] = mapped_column(ForeignKey("books.id", ondelete="CASCADE"), primary_key=True)
 
+    added_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), init=False)
+
     status: Mapped[BookStatus] = mapped_column(
         SQLAlchemyEnum(BookStatus, create_constraint=True), default=BookStatus.PLANNED
     )
     rating: Mapped[int | None] = mapped_column(default=None)
-    added_at: Mapped[datetime] = mapped_column(DateTime, default_factory=lambda: datetime.now(timezone.utc))
 
     user = relationship("User")
     book = relationship("Book")

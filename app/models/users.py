@@ -1,6 +1,4 @@
-from datetime import datetime, timezone
-
-from sqlalchemy import DateTime, String
+from sqlalchemy import DateTime, String, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Model
@@ -24,6 +22,6 @@ class User(Model):
     username: Mapped[str] = mapped_column(String(50), unique=True)
     email: Mapped[str] = mapped_column(String(100), unique=True)
     password_hash: Mapped[str] = mapped_column(String(255))
-    created_at: Mapped[DateTime] = mapped_column(DateTime, default_factory=lambda: datetime.now(timezone.utc))
+    created_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), server_default=func.now(), init=False)
 
     shelf_entries = relationship("UserBook", back_populates="user")

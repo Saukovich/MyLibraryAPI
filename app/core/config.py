@@ -29,8 +29,10 @@ class Config:
     """
 
     db: DatabaseConfig
-    secret_key: str
     debug: bool
+    secret_key: str  # JWT
+    algorithm: str = "HS256"  # Алгоритм шифрования
+    access_token_expire_minutes: int = 60 * 24  # 24 часа
 
 
 def load_config() -> Config:

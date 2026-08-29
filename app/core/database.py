@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, AsyncGenerator
 
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
@@ -23,13 +23,18 @@ class Model(MappedAsDataclass, DeclarativeBase):
     pass
 
 
-async def get_db() -> AsyncSession:
+async def get_db() -> AsyncGenerator[AsyncSession, None]:
     """
     Создает асинхронную сессию для работы с базой данных.
-    :return: AsyncSession - асинхронная сессия для работы с базой данных.
+    :yield: AsyncSession - асинхронная сессия для работы с базой данных.
     """
     async with new_session() as session:
-        yield session
+        try:
+            yield session
+            await session.commit()
+        except Exception:
+            await session.rollback()
+            raise
 
 
 # Тип для зависимости от сессии, который будет использоваться в эндпоинтах

@@ -1,6 +1,6 @@
-from datetime import datetime, timezone
+from datetime import datetime
 
-from sqlalchemy import CheckConstraint, DateTime, String
+from sqlalchemy import CheckConstraint, DateTime, String, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Model
@@ -23,8 +23,8 @@ class Book(Model):
     id: Mapped[int] = mapped_column(primary_key=True, init=False)
     title: Mapped[str] = mapped_column(String(50))
     release_year: Mapped[int] = mapped_column()
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now(timezone.utc))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), init=False)
 
-    authors = relationship("Author", secondary="book_authors", back_populates="books")
+    authors = relationship("Author", secondary="book_authors", back_populates="books", lazy="selectin")
 
     __table_args__ = (CheckConstraint("release_year >= 0", name="release_year_check"),)

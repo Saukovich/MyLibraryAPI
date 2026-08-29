@@ -1,6 +1,6 @@
-from datetime import datetime, timezone
+from datetime import datetime
 
-from sqlalchemy import CheckConstraint, DateTime, ForeignKeyConstraint
+from sqlalchemy import CheckConstraint, DateTime, ForeignKeyConstraint, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Model
@@ -25,10 +25,11 @@ class Note(Model):
     id: Mapped[int] = mapped_column(primary_key=True, init=False)
     text: Mapped[str] = mapped_column()
     page: Mapped[int] = mapped_column()
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now(timezone.utc))
 
     user_id: Mapped[int] = mapped_column()
     book_id: Mapped[int] = mapped_column()
+
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), init=False)
 
     shelf_entry = relationship("UserBook", back_populates="notes")
 

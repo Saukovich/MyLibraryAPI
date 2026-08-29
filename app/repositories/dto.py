@@ -22,4 +22,4 @@ class ShelfStatsRow:
 
     number_of_books: int
     avg_rating: float
-    favourite_author: str
+    favorite_author: str

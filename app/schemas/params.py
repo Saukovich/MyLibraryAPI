@@ -1,4 +1,8 @@
+from datetime import datetime
+
 from pydantic import BaseModel, Field, field_validator, model_validator
+
+from app.models.enums import BookStatus
 
 
 class PaginationParams(BaseModel):
@@ -197,4 +201,53 @@ class NoteFilterParams(PaginationParams):
         Минимальная страница не может быть больше максимальной страницы."""
         if self.page_min and self.page_max and self.page_min > self.page_max:
             raise ValueError("Минимальная страница не может быть больше максимальной страницы")
+        return self
+
+
+class ShelfFilterParams(BookFilterParams):
+    """
+    Query-параметры для фильтрации книг на полке.
+
+    Attributes:
+        status (BookStatus | None): Фильтрация по статусу книги.
+            Возможные значения: BookStatus.PLANNED, BookStatus.READING, BookStatus.READ, BookStatus.ABANDONED.
+        min_rating (int | None): Минимальный рейтинг книги.
+            Допустимые значения: от 1 до 10.
+        added_at_min (datetime | None): Минимальная дата добавления книги на полку.
+        added_at_max (datetime | None): Максимальная дата добавления книги на полку.
+        sort_by (str): Поле для сортировки (по умолчанию 'book_id').
+            Возможные значения: 'book_id', 'title', 'release_year', 'author_id', 'status', 'rating', 'added_at'.
+        order_by (str): Порядок сортировки (по умолчанию 'asc').
+            Возможные значения: 'asc' (по возрастанию) или 'desc' (по убыванию).
+    """
+
+    status: BookStatus | None = None
+    min_rating: int | None = None
+    added_at_min: datetime | None = None
+    added_at_max: datetime | None = None
+    sort_by: str = "book_id"
+    order_by: str = "asc"
+
+    @field_validator("sort_by", mode="after")
+    def validate_sort_by(cls, v):
+        """Валидация поля для сортировки.
+        Возможные значения: "id", "text", "page", "created_at"."""
+        if v not in ["book_id", "title", "release_year", "author_id", "status", "rating", "added_at"]:
+            raise ValueError("Недопустимое значение для sort_by")
+        return v
+
+    @field_validator("min_rating", mode="after")
+    def validate_min_rating(cls, v):
+        """Валидация минимального рейтинга.
+        Допустимые значения: от 1 до 10."""
+        if v is not None and v <= 0 or v > 10:
+            raise ValueError("Минимальный рейтинг должен быть от 1 до 10")
+        return v
+
+    @model_validator(mode="after")
+    def validate_added_at(self):
+        """Валидация диапазона дат добавления.
+        Минимальная дата не может быть больше максимальной даты."""
+        if self.added_at_min and self.added_at_max and self.added_at_min > self.added_at_max:
+            raise ValueError("Минимальная дата добавления не может быть больше максимальной даты добавления")
         return self

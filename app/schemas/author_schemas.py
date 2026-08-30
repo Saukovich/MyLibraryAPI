@@ -6,7 +6,7 @@ class AuthorBase(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
-    fullname: str = Field(..., min_length=1, max_length=100)
+    fullname: str = Field(..., min_length=1, max_length=100, example="Толстой Лев Николаевич")
     birth_year: int = Field(..., ge=0)
     death_year: int | None = Field(None, ge=0)
 
@@ -33,7 +33,7 @@ class AuthorCreate(AuthorBase):
 class AuthorUpdate(AuthorBase):
     """Модель автора для обновления."""
 
-    fullname: str | None = Field(None, min_length=1, max_length=100)
+    fullname: str | None = Field(None, min_length=1, max_length=100, example="Толстой Лев Николаевич")
     birth_year: int | None = Field(None, ge=0)
     death_year: int | None = Field(None, ge=0)
 

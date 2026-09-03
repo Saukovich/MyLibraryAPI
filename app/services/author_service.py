@@ -1,4 +1,4 @@
-from fastapi import HTTPException
+from fastapi import Depends, HTTPException
 
 from app.models.authors import Author
 from app.repositories.author_repository import AuthorRepository
@@ -9,7 +9,7 @@ from app.schemas.params import AuthorFilterParams
 class AuthorService:
     """Сервис для работы с авторами."""
 
-    def __init__(self, author_repository: AuthorRepository) -> None:
+    def __init__(self, author_repository: AuthorRepository = Depends()) -> None:
         """Инициализация сервиса."""
         self.author_repository = author_repository
 

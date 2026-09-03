@@ -1,4 +1,4 @@
-from fastapi import HTTPException
+from fastapi import Depends, HTTPException
 
 from app.models.notes import Note
 from app.repositories.book_repository import BookRepository
@@ -16,10 +16,10 @@ class NoteService:
 
     def __init__(
         self,
-        note_repository: NoteRepository,
-        user_repository: UserRepository,
-        book_repository: BookRepository,
-        shelf_repository: ShelfRepository,
+        note_repository: NoteRepository = Depends(),
+        user_repository: UserRepository = Depends(),
+        book_repository: BookRepository = Depends(),
+        shelf_repository: ShelfRepository = Depends(),
     ) -> None:
         """
         Инициализация сервиса.

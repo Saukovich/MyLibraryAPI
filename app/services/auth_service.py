@@ -1,4 +1,4 @@
-from fastapi import HTTPException
+from fastapi import Depends, HTTPException
 
 from app.core.security import create_access_token, hash_password, verify_password
 from app.models.users import User
@@ -11,7 +11,7 @@ class AuthService:
     Сервис авторизации.
     """
 
-    def __init__(self, user_repository: UserRepository) -> None:
+    def __init__(self, user_repository: UserRepository = Depends()) -> None:
         """
         Инициализация сервиса авторизации.
         Args:

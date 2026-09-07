@@ -81,9 +81,9 @@ async def shelf_entry(db_session, existing_user, book):
 
 
 @pytest.fixture
-async def note(db_session, existing_user, book):
+async def note(db_session, existing_user, book, shelf_entry):
     """Фикстура для заметки."""
-    note = Note(user_id=existing_user.id, book_id=book.id, text="Test Note")
+    note = Note(user_id=existing_user.id, book_id=book.id, text="Test Note", page=1)
     db_session.add(note)
     await db_session.flush()
     await db_session.refresh(note)

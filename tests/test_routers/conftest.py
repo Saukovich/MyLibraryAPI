@@ -71,6 +71,17 @@ async def book(db_session, author):
 
 
 @pytest.fixture
+async def book_not_in_shelf(db_session, author):
+    """Фикстура для книги, не находящейся на полке."""
+    book = Book(title="Test Book not in shelf", release_year=2020)
+    book.authors = [author]
+    db_session.add(book)
+    await db_session.flush()
+    await db_session.refresh(book)
+    return book
+
+
+@pytest.fixture
 async def shelf_entry(db_session, existing_user, book):
     """Фикстура для записи на полке."""
     shelf_entry = UserBook(user_id=existing_user.id, book_id=book.id)

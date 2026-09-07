@@ -240,7 +240,7 @@ class ShelfFilterParams(BookFilterParams):
     def validate_min_rating(cls, v):
         """Валидация минимального рейтинга.
         Допустимые значения: от 1 до 10."""
-        if v is not None and v <= 0 or v > 10:
+        if v is not None and (v <= 0 or v > 10):
             raise ValueError("Минимальный рейтинг должен быть от 1 до 10")
         return v
 

@@ -3,8 +3,9 @@ services:
     image: mylibrary
     build: .
     environment:
-      DATABASE_URL: postgresql+asyncpg://mylibrary_user:${DB_PASSWORD}@db/mylibrary
+      DATABASE_URL: postgresql+asyncpg://${DB_USER}:${DB_PASSWORD}@db/${DB_NAME}
       SECRET_KEY: ${SECRET_KEY}
+      DEBUG: ${DEBUG}
     ports:
       - "8000:8000"
     depends_on:
@@ -13,9 +14,9 @@ services:
   db:
     image: postgres:16.0
     environment:
-      POSTGRES_USER: mylibrary_user
+      POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: mylibrary
+      POSTGRES_DB: ${DB_NAME}
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U mylibrary_user -d mylibrary"]
       interval: 10s

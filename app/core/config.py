@@ -26,6 +26,8 @@ class Config:
         db: DatabaseConfig - Настройки базы данных
         secret_key: str - Секретный ключ для шифрования данных
         debug: bool - Флаг для включения режима отладки
+        algorithm: str -- Алгоритм шифрования
+        access_token_expire_minutes: int -- Длительность работы Access Token
     """
 
     db: DatabaseConfig
@@ -62,4 +64,6 @@ def load_config() -> Config:
         db=DatabaseConfig(_get_required_env("DATABASE_URL")),
         secret_key=_get_required_env("SECRET_KEY"),
         debug=os.getenv("DEBUG", default="True") in ("True", "true", "1"),
+        algorithm=os.getenv("ALGORITHM", default="HS256"),
+        access_token_expire_minutes=int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", default=60 * 24)),
     )

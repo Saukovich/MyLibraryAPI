@@ -35,15 +35,31 @@ class Config:
     access_token_expire_minutes: int = 60 * 24  # 24 часа
 
 
+def _get_required_env(key: str) -> str:
+    """
+    Получение переменной окружения, которая является обязательной.
+    Args:
+        key: str - Ключ переменной окружения.
+
+    Returns:
+        str -- Значение переменной окружения.
+    """
+    value = os.getenv(key)
+    if value is None:
+        raise RuntimeError(f"Обязательная переменная окружения {key} не установлена.")
+    return value
+
+
 def load_config() -> Config:
     """
     Загрузка конфигурации из .env файла, который по умолчанию находится в корне проекта.
-    :return: Config - Загруженная конфигурация приложения.
+    Returns:
+        Config - Загруженная конфигурация приложения.
     """
     env_path = Path(__file__).parent.parent.parent / ".env"  # Путь к .env файлу в корне проекта
     load_dotenv(env_path)
     return Config(
-        db=DatabaseConfig(os.getenv("DATABASE_URL")),
-        secret_key=os.getenv("SECRET_KEY"),
-        debug=os.getenv("DEBUG", default=True),
+        db=DatabaseConfig(_get_required_env("DATABASE_URL")),
+        secret_key=_get_required_env("SECRET_KEY"),
+        debug=os.getenv("DEBUG", default="True") in ("True", "true", "1"),
     )

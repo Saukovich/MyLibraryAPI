@@ -42,9 +42,6 @@ alembic/__pycache__/
 !migrations/.gitkeep
 !migrations/versions/.gitkeep
 
-# Docker (если генерируются временные файлы)
-.dockerignore
-
 # Файлы проекта, которые не должны попадать в репозиторий
 *.pyo
 *.pyd

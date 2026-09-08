@@ -1,0 +1,28 @@
+services:
+  app:
+    image: mylibrary
+    build: .
+    environment:
+      DATABASE_URL: postgresql+asyncpg://mylibrary_user:${DB_PASSWORD}@db/mylibrary
+      SECRET_KEY: ${SECRET_KEY}
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+  db:
+    image: postgres:16.0
+    environment:
+      POSTGRES_USER: mylibrary_user
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: mylibrary
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mylibrary_user -d mylibrary"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+volumes:
+  db-data:

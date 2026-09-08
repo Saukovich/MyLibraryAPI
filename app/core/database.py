@@ -11,7 +11,7 @@ config = load_config()
 DATABASE_URL = config.db.database_url
 
 
-engine = create_async_engine(DATABASE_URL)
+engine = create_async_engine(DATABASE_URL, echo=config.debug)
 new_session = async_sessionmaker(engine, expire_on_commit=False)
 
 

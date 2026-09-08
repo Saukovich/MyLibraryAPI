@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 import uvicorn
 from fastapi import APIRouter, FastAPI
 
+from app.core.config import load_config
 from app.core.database import Model, engine
 from app.routers.auth import router as auth_router
 from app.routers.authors import router as authors_router
@@ -21,7 +22,15 @@ async def lifespan(app: FastAPI):
     print("Выключение сервера.")
 
 
-app = FastAPI(lifespan=lifespan, title="MyLibrary API docs")
+config = load_config()
+
+app = FastAPI(
+    lifespan=lifespan,
+    title="MyLibraryAPI",
+    description="API для личной библиотеки",
+    docs_url="/docs" if config.debug else None,
+    redoc_url="/redoc" if config.debug else None,
+)
 
 api_v1_router = APIRouter(prefix="/api/v1")
 

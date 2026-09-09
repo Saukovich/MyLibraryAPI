@@ -1,0 +1,13 @@
+venv/
+.venv/
+data/*.db
+.env
+.git/
+__pycache__/
+*.pyc
+.pytest_cache/
+tests/
+.flake8
+.isort.cfg
+.pre-commit-config.yaml
+README.md
